@@ -42,13 +42,13 @@ export const spawnEnemySystem = defineSystem((world: World) => {
             );
 
             const {agentIndex} = world.crowd.addAgent(nearestPoly!.nearestPoint, {
-                radius: 1,
-                height: 1.8,
+                radius: 0.1,
+                height: 1,
                 maxAcceleration: 2.0,    // Убедитесь, что ускорение не 0
                 maxSpeed: 2.5,           // Убедитесь, что скорость не 0
-                collisionQueryRange: 2.5,
-                separationWeight: 2.0,
-                updateFlags: 7           // Убедитесь, что флаги включают движение
+                collisionQueryRange: 1,
+                separationWeight: 1,
+                updateFlags: 0//7           // Убедитесь, что флаги включают движение
             });
 
             CrowdAgentComponent.crowdId[eid] = agentIndex;

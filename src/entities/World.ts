@@ -39,7 +39,9 @@ export class World implements IWorld {
         await init();
 
         const mesh = scene.getObjectByName('level') as Mesh;
-        const {success, navMesh} = threeToSoloNavMesh([mesh]);
+        console.log(mesh);
+
+        const {success, navMesh} = threeToSoloNavMesh(mesh.children);
 
         if (!success) {
             console.error('Failed to generate NavMesh');

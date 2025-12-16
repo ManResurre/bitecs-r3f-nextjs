@@ -66,7 +66,7 @@ const Level = () => {
 }
 
 // Предзагрузка ресурсов
-useLoader.preload(GLTFLoader, './models/level-transformed.glb');
+useLoader.preload(GLTFLoader, './models/level.glb');
 useLoader.preload(TextureLoader, './textures/lightmap.png');
 
 export default React.memo(Level);

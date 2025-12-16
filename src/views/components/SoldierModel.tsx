@@ -103,7 +103,7 @@ const SoldierModel = ({eid, ...props}: SoldierModelProps) => {
     useFrame(() => {
         if (crowdAgent && soldierRef.current) {
             // Позиция всегда синхронизирована
-            soldierRef.current.position.copy(crowdAgent.position());
+            soldierRef.current.position.copy(crowdAgent.position()).add(new Vector3(0,-0.2,0));
             soldierRef.current.quaternion.copy(soldierEntity.rotation);
 
             if (debugArrowsRef.current) {

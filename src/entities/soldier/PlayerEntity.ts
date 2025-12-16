@@ -26,12 +26,4 @@ export class PlayerEntity extends Npc {
     setCameraQuaternion(cameraQuaternion: Quaternion) {
         this.cameraQuaternion = cameraQuaternion;
     }
-
-    setMouseDown() {
-
-    }
-
-    setMouseUp() {
-
-    }
 }

@@ -1,5 +1,5 @@
 import {Suspense} from "react";
-import {Sky, Stats} from '@react-three/drei';
+import {OrbitControls, Sky, Stats} from '@react-three/drei';
 import {Perf} from 'r3f-perf';
 import {useLoaderData} from "@tanstack/react-router";
 import {WorldContextProvider} from "../contexts/WorldContextProvider.tsx";
@@ -21,10 +21,10 @@ export function Game() {
 
     return (
         <>
-            {/*<OrbitControls/>*/}
+            <OrbitControls/>
             <WorldContextProvider levelData={levelData}>
-                <CameraController/>
-                <OcclusionController/>
+                {/*<CameraController/>*/}
+                {/*<OcclusionController/>*/}
                 <Suspense>
                     <Sky
                         distance={1000}

@@ -9,5 +9,4 @@ import {Npc} from "./Npc.ts";
 @WithCombat
 @WithMovement
 export class Soldier extends Npc {
-
 }

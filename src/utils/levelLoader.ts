@@ -6,7 +6,7 @@ export async function loadLevelData(): Promise<LevelData> {
             {
                 name: 'zombie',
                 delay: 1,
-                max: 0,
+                max: 1,
                 position: [3, 0, 5]
             },
             // {
