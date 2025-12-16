@@ -18,7 +18,15 @@ export const TileComponent = defineComponent({id: Types.ui8});
 
 export const ColorComponent = defineComponent({team: Types.ui8});
 export const MobComponent = defineComponent({
-    name: [Types.ui8, 32]
+    name: [Types.ui8, 32],
+});
+
+export const PlayerComponent = defineComponent({
+    name: [Types.ui8, 32],
+});
+
+export const CrowdAgentComponent = defineComponent({
+    crowdId: Types.i32,
 });
 
 export const SpawnComponent = defineComponent({
@@ -91,4 +99,11 @@ export const BulletComponent = defineComponent({
     from: Vector3,
     to: Vector3,
     time: Types.i32
+});
+
+export const NavigationAgent = defineComponent({
+    agentId: Types.i32, // ID агента в Crowd из recast-navigation [citation:1]
+    speed: Types.f32,
+    state: Types.ui8, // 0 = idle, 1 = moving, 2 = gathering
+    target: Vector3
 });

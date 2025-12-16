@@ -1,8 +1,4 @@
 import {createContext} from "react";
-import {CustomWorld} from "../../types";
+import {World} from "../../entities/World.ts";
 
-export const WorldContext = createContext<CustomWorld | undefined>(undefined);
-
-
-
-
+export const WorldContext = createContext<World | undefined>(undefined);

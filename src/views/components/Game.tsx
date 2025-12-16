@@ -7,6 +7,8 @@ import Light from "./Light.tsx";
 import GameScene from "./GameScene.tsx";
 import {useControls} from "leva";
 import {Vector3} from "three";
+import CameraController from "./CameraController.tsx";
+import OcclusionController from "./OcclusionController.tsx";
 
 export function Game() {
     const {levelData} = useLoaderData({from: "/"});
@@ -21,6 +23,8 @@ export function Game() {
         <>
             <OrbitControls/>
             <WorldContextProvider levelData={levelData}>
+                {/*<CameraController/>*/}
+                {/*<OcclusionController/>*/}
                 <Suspense>
                     <Sky
                         distance={1000}

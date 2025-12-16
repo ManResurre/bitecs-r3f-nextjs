@@ -2,7 +2,7 @@
 import { ForwardedRef, forwardRef, useImperativeHandle, useRef } from 'react';
 import { Vector3 as TREEVector3, ArrowHelper, Group } from 'three';
 import { useFrame } from '@react-three/fiber';
-import { Vector3 } from "yuka";
+import {Vector3} from "../../../core/math/Vector3.ts";
 
 export type DebugArrowsProps = {
     lookDirection?: Vector3;

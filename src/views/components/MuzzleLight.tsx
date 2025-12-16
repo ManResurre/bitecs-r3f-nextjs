@@ -55,7 +55,7 @@ const MuzzleLight = ({
                          baseIntensity = 20,
                          distance = 5,
                          color = "#ff7b2c",
-                         maxLights = 3,
+                         maxLights = 5,
                      }: MuzzleLightProps) => {
 
     const world = useWorld();
@@ -113,7 +113,7 @@ const MuzzleLight = ({
         }
 
         // Логируем состояние системы (можно убрать в продакшене)
-        if (flashQueue.current.length > 0) {
+        if (flashQueue.current.length > 5) {
             console.log(`Queue: ${flashQueue.current.length}, Total Lights: ${lightInstances.current.length}`);
         }
 

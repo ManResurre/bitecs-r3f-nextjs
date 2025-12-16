@@ -12,7 +12,7 @@ const Light = () => {
     useHelper(dr as RefObject<DirectionalLight>, DirectionalLightHelper, 1, "red");
     const {intensity, x, y, z, targetX, targetY, targetZ, color, showHelper} = useControls('Light', {
         intensity: {value: 2, min: 0, max: 15},
-        x: {value: -30, min: -30, max: 30},
+        x: {value: 0, min: -30, max: 30},
         y: {value: 40, min: -30, max: 40},
         z: {value: -30, min: -30, max: 30},
         targetX: {value: 0, min: -10, max: 10},

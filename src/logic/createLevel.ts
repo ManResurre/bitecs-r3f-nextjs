@@ -6,40 +6,20 @@ import {
     SpawnComponent,
 } from "./components";
 import {LevelData} from "../types/LevelData";
-import {CustomWorld} from "../types";
-import {CellSpacePartitioning, EntityManager} from "yuka";
 import CONFIG from "../core/Config.ts";
+import {World} from "../entities/World.ts";
 
 export function createLevel(levelData: LevelData) {
-    const world = createWorld({
-        time: {delta: 0, elapsed: 0, then: performance.now()},
-        size: {
-            width: 20,
-            height: 20,
-        },
-        rigidBodies: new Map(),
-        entityManager: new EntityManager(),
-        muzzleFlashSystem: new Map()
-
-    }) as CustomWorld;
-
-    world.entityManager.spatialIndex = new CellSpacePartitioning(
-        world.size.width,
-        world.size.height,
-        10, // Глубина для 2D-мира
-        10, // Количество ячеек по X
-        10, // Количество ячеек по Y
-        10 // Количество ячеек по Z
-    );
+    const world = createWorld(new World());
 
     setSpawnMobs(levelData.mobs, world);
-    setSpawnHealthPack(levelData.healthPackSpawningPoints, world)
-    createRainEmitter(world);
+    // setSpawnHealthPack(levelData.healthPackSpawningPoints, world)
+    // createRainEmitter(world);
 
     return world;
 }
 
-function setSpawnMobs(mobs: LevelData["mobs"], world: CustomWorld) {
+function setSpawnMobs(mobs: LevelData["mobs"], world: World) {
     for (const mob of mobs) {
         const eid = addEntity(world);
 
@@ -58,7 +38,7 @@ function setSpawnMobs(mobs: LevelData["mobs"], world: CustomWorld) {
     }
 }
 
-function setSpawnHealthPack(points: LevelData["healthPackSpawningPoints"], world: CustomWorld) {
+function setSpawnHealthPack(points: LevelData["healthPackSpawningPoints"], world: World) {
     for (const point of points) {
         const eid = addEntity(world);
         addComponent(world, SpawnComponent, eid);
@@ -75,7 +55,7 @@ function setSpawnHealthPack(points: LevelData["healthPackSpawningPoints"], world
     }
 }
 
-function createRainEmitter(world: CustomWorld) {
+function createRainEmitter(world: World) {
     const emitterEid = addEntity(world);
 
     addComponent(world, PositionComponent, emitterEid);

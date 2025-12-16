@@ -1,28 +1,26 @@
-import React, {useLayoutEffect} from "react";
+import React, {useEffect, useRef} from "react";
 import {useLoader} from "@react-three/fiber";
 import {GLTFLoader} from "three/examples/jsm/Addons.js";
 import {Mesh, MeshBasicMaterial, MeshStandardMaterial, TextureLoader} from "three";
 import {useGLTF, useTexture} from '@react-three/drei';
-import {MeshGeometry} from "yuka";
 import {useWorld} from "../hooks/useWorld.tsx";
-import {LevelEntity} from "../../entities/LevelEntity.ts";
 
 const Level = () => {
     const world = useWorld()
+
+    const levelRef = useRef(null);
+
     const {scene} = useGLTF('./models/level.glb');
     const lightmap = useTexture('./textures/lightmap.png');
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         if (!scene || !lightmap) return;
+
+        world.setLevelRef(levelRef);
 
         const mesh = scene.getObjectByName('level') as Mesh;
 
         if (mesh && mesh.isMesh) {
-            const vertices = mesh.geometry.attributes.position.array as Float32Array;
-            const indices = mesh.geometry.index!.array as Uint16Array;
-            const geometry = new MeshGeometry(vertices, indices);
-            world.level = new LevelEntity(geometry);
-
             const material = mesh.material as MeshBasicMaterial;
             // Настройка lightmap
             lightmap.flipY = false;
@@ -33,7 +31,8 @@ const Level = () => {
                 color: material.color,
                 transparent: material.transparent,
                 opacity: material.opacity,
-
+                roughness: 0.8,
+                metalness: 0.1,
                 // Настройки lightmap
                 lightMap: lightmap,
             });
@@ -57,9 +56,13 @@ const Level = () => {
 
     }, [scene, lightmap]);
 
-    return <>
-        <primitive object={scene}/>
-    </>;
+    useEffect(() => {
+        if (!scene)
+            return;
+        world.initNav(scene, world);
+    }, [scene])
+
+    return <primitive ref={levelRef} object={scene}/>;
 }
 
 // Предзагрузка ресурсов

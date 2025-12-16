@@ -1,19 +1,12 @@
 import {useGLTF} from "@react-three/drei";
-import {RefObject, useMemo, useRef, useState} from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
 import MuzzleFlash from "./MuzzleFlash.tsx";
-import {Group, Object3DEventMap, Sprite, TextureLoader, Vector3} from "three";
+import {Group, Mesh, Sprite, TextureLoader, Vector3} from "three";
 import {useFrame, useLoader} from "@react-three/fiber";
 import {GLTFLoader} from "three/examples/jsm/Addons.js";
-import {useWorld} from "../hooks/useWorld.tsx";
 import {AssaultRifleComponent} from "../../logic/components";
-import Bullets, {BulletsRef} from "./Bullets.tsx";
-
-export type AssaultRifleRef = {
-    eid: number
-} & Group;
 
 type AssaultRifleProps = {
-    ref: RefObject<Group<Object3DEventMap> | null>;
     eid?: number
 } & Partial<Group>;
 const AssaultRifle = ({
@@ -21,7 +14,6 @@ const AssaultRifle = ({
                           ...rest
                       }: AssaultRifleProps) => {
 
-    const world = useWorld();
     const weaponRef = useRef(null);
     const muzzleFlashRef = useRef<Sprite>(null);
 
@@ -30,6 +22,18 @@ const AssaultRifle = ({
     const clonedScene = useMemo(() => {
         return scene.clone();
     }, [scene]);
+
+
+    useEffect(() => {
+        if (!clonedScene) return;
+
+        clonedScene.traverse((child) => {
+            if ((child as Mesh).isMesh) {
+                child.castShadow = true;
+                child.receiveShadow = true;
+            }
+        });
+    }, [clonedScene])
 
     const [muzzleFlashVisible, setMuzzleFlashVisible] = useState(true);
 
@@ -41,22 +45,14 @@ const AssaultRifle = ({
 
         if (eid && AssaultRifleComponent.shoot[eid]) {
             setMuzzleFlashVisible(true);
-        //     if (bulletRef.current)
-        //         // bulletRef.current.target = new Vector3(
-        //         //     AssaultRifleComponent.target.x[eid],
-        //         //     AssaultRifleComponent.target.y[eid],
-        //         //     AssaultRifleComponent.target.z[eid]
-        //         // )
-        //         setMuzzleFlashVisible(true);
-        //     if (world.muzzleFlashSystem && muzzleFlashRef.current && bulletRef.current) {
-        //         bulletRef.current.position.copy(muzzleFlashRef.current.position)
-        //     }
         }
     });
 
     return (
         <group {...rest}>
-            <primitive ref={weaponRef} object={clonedScene}/>
+            <primitive
+                ref={weaponRef}
+                object={clonedScene}/>
             <MuzzleFlash
                 name="MuzzleFlash"
                 ref={muzzleFlashRef}
@@ -70,4 +66,4 @@ const AssaultRifle = ({
 
 useLoader.preload(GLTFLoader, './models/assaultRifle_high.glb');
 useLoader.preload(TextureLoader, './textures/muzzle.png');
-export default AssaultRifle;
+export default React.memo(AssaultRifle);

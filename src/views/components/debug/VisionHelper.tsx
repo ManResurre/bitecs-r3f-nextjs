@@ -11,8 +11,8 @@ interface VisionHelperProps {
 }
 
 export const VisionHelper = ({
-                                 fieldOfView,
-                                 range,
+                                 fieldOfView = 120,
+                                 range = 20,
                                  division = 8,
                                  color = 'white',
                                  ...rest
@@ -22,16 +22,17 @@ export const VisionHelper = ({
         const geom = new BufferGeometry();
         const positions: number[] = [];
 
-        const foV05 = fieldOfView / 2;
-        const step = fieldOfView / division;
+        // Конвертируем градусы в радианы
+        const foV05Rad = (fieldOfView / 2) * (Math.PI / 180);
+        const stepRad = (fieldOfView / division) * (Math.PI / 180);
 
         // Создаем веер из треугольников в плоскости XZ
-        for (let i = -foV05; i < foV05; i += step) {
+        for (let i = -foV05Rad; i < foV05Rad; i += stepRad) {
             // Треугольник: начало -> точка i -> точка i+step
             positions.push(
                 0, 0, 0, // начало
                 Math.sin(i) * range, 0, Math.cos(i) * range, // точка i
-                Math.sin(i + step) * range, 0, Math.cos(i + step) * range // точка i+step
+                Math.sin(i + stepRad) * range, 0, Math.cos(i + stepRad) * range // точка i+step
             );
         }
 

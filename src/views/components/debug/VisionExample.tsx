@@ -4,6 +4,8 @@ import * as THREE from 'three';
 import * as YUKA from 'yuka';
 import {useWorld} from "../../hooks/useWorld.tsx";
 import {GameEntity, MeshGeometry, Ray, Vector3} from "yuka";
+import {Vision} from "../../../core/Vision.ts";
+import {Soldier} from "../../../entities/soldier/Soldier.ts";
 
 class ObstacleEntity extends GameEntity {
     geometry: MeshGeometry;
@@ -169,40 +171,22 @@ export const Obstacle = ({vision, ...rest}: ThreeElements['mesh'] & { vision?: Y
 };
 
 // Цель с проверкой видимости через Yuka
-export const Target = (props: ThreeElements['mesh'] & { vision?: YUKA.Vision }) => {
+export const Target = (props: ThreeElements['mesh'] & { entity?: Soldier }) => {
     const meshRef = useRef<THREE.Mesh>(null!);
-    const targetEntityRef = useRef<YUKA.GameEntity>();
     const [isVisible, setIsVisible] = useState(false);
-    const {entityManager} = useWorld();
-
-    // Создаем сущность цели для Yuka
-    useEffect(() => {
-        const targetEntity = new YUKA.GameEntity();
-        targetEntity.name = 'Target';
-        targetEntityRef.current = targetEntity;
-
-        // Регистрируем сущность в менеджере
-        entityManager.add(targetEntity);
-
-        return () => {
-            // Очистка при размонтировании
-            entityManager.remove(targetEntity);
-        };
-    }, [entityManager]);
 
     useFrame((state) => {
-        if (meshRef.current && targetEntityRef.current) {
+        if (meshRef.current) {
             // Анимируем движение цели
             const elapsed = state.clock.getElapsedTime();
             const newX = Math.sin(elapsed * 0.5) * 18;
 
             meshRef.current.position.set(newX, 0, 10);
-            targetEntityRef.current.position.set(newX, 0, 10);
 
             // Проверяем видимость через Yuka Vision
-            if (props.vision) {
+            if (props.entity) {
                 // console.log(props.vision);
-                const visible = props.vision.visible(targetEntityRef.current.position);
+                const visible = props.entity.isVisible(meshRef.current.position);
                 setIsVisible(visible);
 
                 // Для отладки - выводим в консоль

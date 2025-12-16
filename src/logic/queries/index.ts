@@ -1,6 +1,5 @@
 import {defineQuery} from "bitecs";
 import {
-    ColorComponent,
     HealthComponent,
     MobComponent,
     ParticleComponent,
@@ -15,9 +14,8 @@ import {
     HealthPackSpawnComponent,
     HealthPackComponent,
     AssaultRifleComponent,
-    BulletComponent, MobSpawnComponent,
+    BulletComponent, MobSpawnComponent, CrowdAgentComponent, PlayerComponent,
 } from "../components";
-import {FlowComponent} from "../components/FlowComponent";
 
 export const movementQuery = defineQuery([
     PositionComponent,
@@ -32,12 +30,6 @@ export const tilesQuery = defineQuery([
     TileComponent,
 ]);
 
-export const flowQuery = defineQuery([
-    ColorComponent,
-    PositionComponent,
-    FlowComponent,
-]);
-
 export const spawnMobsQuery = defineQuery([
     PositionComponent,
     SpawnComponent,
@@ -46,7 +38,12 @@ export const spawnMobsQuery = defineQuery([
 
 export const mobsQuery = defineQuery([
     MobComponent,
-    MobYukaEntityComponent
+    CrowdAgentComponent
+]);
+
+export const playersQuery = defineQuery([
+    PlayerComponent,
+    CrowdAgentComponent
 ]);
 
 export const assaultRifleQuery = defineQuery([

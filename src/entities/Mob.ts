@@ -1,5 +1,5 @@
 import {
-    FollowPathBehavior, GameEntity, MemoryRecord, MemorySystem,
+    FollowPathBehavior, GameEntity, Goal, MemoryRecord, MemorySystem,
     NavMesh,
     OnPathBehavior,
     Polygon,
@@ -16,7 +16,7 @@ import {
     STATUS_ALIVE, STATUS_DEAD,
     STATUS_DYING,
 } from "../core/Constants.ts";
-import {AnimationAction, AnimationMixer, Group, SkinnedMesh, Sprite, Vector3 as TreeVector3} from "three";
+import {AnimationAction, AnimationMixer, Group, Sprite, Vector3 as TreeVector3} from "three";
 import {mobsQuery} from "../logic/queries";
 import {TargetSystem} from "../core/TargetSystem.ts";
 import {GetHealthEvaluator} from "../logic/evaluators/GetHealthEvaluator.ts";
@@ -26,6 +26,7 @@ import {AssaultRifleComponent} from "../logic/components";
 import {addComponent, addEntity} from "bitecs";
 import {addBullet} from "../logic/systems/spawnBulletSystem.ts";
 import {CharacterBounds} from "../logic/etc/CharacterBounds.ts";
+import {CompositeGoal} from "yuka/src/goal/CompositeGoal";
 
 // Константы для системы анимаций
 const DIRECTIONS = [
@@ -104,12 +105,6 @@ export class Mob extends Vehicle {
     weaponRef?: RefObject<Group>;
     renderComponent?: RefObject<Group>;
 
-    attackRange = {
-        desired: 15,
-        min: 8,
-        max: 20
-    };
-
     reactionTime = CONFIG.BOT.WEAPON.REACTION_TIME;
 
     arId: number;
@@ -130,7 +125,6 @@ export class Mob extends Vehicle {
         addComponent(this.world, AssaultRifleComponent, this.arId);
         AssaultRifleComponent.shoot[this.arId] = 0;
 
-        // this.initializePosition();
         this.brain.addEvaluator(new AttackEvaluator());
         this.brain.addEvaluator(new ExploreEvaluator());
         this.brain.addEvaluator(new GetHealthEvaluator());
@@ -295,7 +289,7 @@ export class Mob extends Vehicle {
                 this.resetSearch();
             }
 
-            this.updateAimAndShot(delta)
+            this.updateAimAndShot()
         }
 
         // handle dying
@@ -313,12 +307,12 @@ export class Mob extends Vehicle {
     }
 
     getStatus(): string[] {
-        const getAllGoals = (rootGoal: any): any[] => {
+        const getAllGoals = (rootGoal: CompositeGoal<Mob>): string[] => {
             const goals: string[] = [];
-            const stack: any[] = [rootGoal];
+            const stack: Goal<Mob>[] = [rootGoal];
 
             while (stack.length > 0) {
-                const currentGoal = stack.pop();
+                const currentGoal = stack.pop() as CompositeGoal<Mob>;
                 goals.push(currentGoal.constructor.name);
 
                 // Добавляем подцели в стек (в обратном порядке для сохранения порядка)
@@ -577,7 +571,7 @@ export class Mob extends Vehicle {
         return angle <= tolerance;
     }
 
-    updateAimAndShot(delta: number) {
+    updateAimAndShot() {
         AssaultRifleComponent.shoot[this.arId] = 0;
 
         const targetSystem = this.targetSystem;
@@ -615,7 +609,7 @@ export class Mob extends Vehicle {
                     this.targetPosition.copy(this.position).add(this.attackDirection);
                     this.rotateTo(this.targetPosition);
                 } else {
-                    this.rotateTo(targetSystem.getLastSensedPosition());
+                    this.rotateTo(targetSystem.getLastSensedPosition() as Vector3);
                 }
             }
         } else {
